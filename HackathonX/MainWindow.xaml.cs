@@ -16,6 +16,7 @@ using System.Drawing;
 using Rectangle = System.Windows.Shapes.Rectangle;
 using Brushes = System.Windows.Media.Brushes;
 using System.Drawing.Imaging;
+using HackathonX.DB.Model;
 
 namespace HackathonX
 {
@@ -38,6 +39,8 @@ namespace HackathonX
         private const double PiecesWidth = 0.33;
         private const double PiecesHeight = 0.33;
         BitmapImage myBitmapImage = new BitmapImage();
+
+        public User CurrentUser { get; set; }
 
         private void Window1_Loaded(object sender, RoutedEventArgs e)
         {

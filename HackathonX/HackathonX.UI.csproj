@@ -12,6 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\HackathonX.DB\HackathonX.DB.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="images\world.PNG">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
