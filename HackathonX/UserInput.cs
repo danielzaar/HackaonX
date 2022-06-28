@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Diagnostics;
 using System.Windows;
 
 namespace HackathonX.UI
@@ -8,14 +8,22 @@ namespace HackathonX.UI
     /// </summary>
     public partial class UserInput : Window
     {
+        MainWindow mainWin;
+
+
         public UserInput()
         {
             InitializeComponent();
         }
+
         private void StartPlaying_Click(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("..Here we go");
-        }
+            string strName = txtName.Text.Trim();
+            Debug.WriteLine($"player: >>>{strName}<<<");
 
+            mainWin = new MainWindow();
+            mainWin.Show();
+            this.Hide();
+        }
     }
 }
