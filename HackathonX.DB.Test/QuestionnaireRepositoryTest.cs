@@ -1,56 +1,57 @@
 ﻿using HackathonX.DB.Model;
 using HackathonX.DB.Repositories;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace HackathonX.DB.Test
 {
-    public class QuestionnaireRepositoryTest
+    public class QuestionnaireRepositoryTest : IDisposable
     {
-        /*[Fact]
-        public async Task GetOrAddUser_NewName_SavesToDb()
+        private readonly SqliteConnection _connection;
+        private readonly DbContextOptions<HackathonXContext> _contextOptions;
+        private readonly HackathonXContext _hackathonXContext;
+
+        public QuestionnaireRepositoryTest()
         {
-            // Arrange
-            string name = Guid.NewGuid().ToString();
+            _connection = new SqliteConnection("Data Source=HackathonX.db;");//new SqliteConnection("Filename=:memory:");
+            _connection.Open();
 
-            var dbContext = new HackathonXContext();
-            var userBefore = UserDbHelper(dbContext, name);
-            Assert.Null(userBefore);
+            _contextOptions = new DbContextOptionsBuilder<HackathonXContext>()
+                .UseSqlite(_connection)
+                .Options;
 
-            // Act
-            using var questionnaireRepository = new QuestionnaireRepository(dbContext);
-            User result = await questionnaireRepository.GetQuestionnaire(name);
+            _hackathonXContext = new HackathonXContext(_contextOptions);
+        }
 
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(name, result.Name);
-            
-            var userAfter = UserDbHelper(dbContext, name);
-            Assert.Null(userBefore);
+        public void Dispose()
+        {
+            _hackathonXContext?.Dispose();
+            _connection?.Close();
+            _connection?.Dispose();
         }
 
         [Fact]
-        public async Task GetOrAddUser_ExistingName_GetsFromDb()
+        public async Task GetQuestionnaire_TakeThreeForEachGroup_ReturnsCorrrectdata()
         {
             // Arrange
-            string name = Guid.NewGuid().ToString();
-
-            var dbContext = new HackathonXContext();
-            var userBefore = UserDbHelper(dbContext, name);
-            Assert.NotNull(userBefore);
 
             // Act
-            using var userRepository = new UserRepository(new HackathonXContext());
-            User result = await userRepository.GetOrAddUser(name);
+            using var questionnaireRepository = new QuestionnaireRepository(_hackathonXContext);
+            IEnumerable<Question> result = await questionnaireRepository.GetQuestionnaire(3);
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(name, result.Name);
-        }
+            Assert.Equal(9, result.Count());
+            Assert.Equal(3, result.Where(x => x.Score == 10).Count());
+            Assert.Equal(3, result.Where(x => x.Score == 20).Count());
+            Assert.Equal(3, result.Where(x => x.Score == 30).Count());
 
-        private static async Task<User?> UserDbHelper(HackathonXContext dbContext, string name)
-        {
-            return await dbContext.Users.SingleOrDefaultAsync(u => u.Name == name);
-        }*/
+            foreach (Question question in result)
+            {
+                Assert.NotEmpty(question.Answers);
+                Assert.Single(question.Answers.Where(x => x.IsCorrect));
+            }
+        }
     }
 }

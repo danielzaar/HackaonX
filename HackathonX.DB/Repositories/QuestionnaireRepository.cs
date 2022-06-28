@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HackathonX.DB.Model;
+﻿using HackathonX.DB.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace HackathonX.DB.Repositories
 {
     public class QuestionnaireRepository : IDisposable
     {
-        private HackathonXContext m_DbContext;
+        private readonly HackathonXContext m_DbContext;
 
         public QuestionnaireRepository(HackathonXContext dbContext)
         {
@@ -22,17 +17,115 @@ namespace HackathonX.DB.Repositories
             m_DbContext.Dispose();
         }
 
-        public async Task<IEnumerable<Question>> GetQuestionnaire(int takeTop = 10)
+        public async Task<IEnumerable<Question>> GetQuestionnaire(int takefromEachGroup = 3)
         {
-            var t = await m_DbContext.Questions
-                .Include(x => x.Answers).ToListAsync();
-            return null;
+            var something = await m_DbContext.Questions
+                .Include(q => q.Answers)
+                .GroupBy(x => x.Score)
+                .Select(y =>
+                    new
+                    {
+                        k = y.Key,
+                        v = y.OrderBy(r => Guid.NewGuid()).Take(takefromEachGroup)
+                    })
+                .ToListAsync();
+            return something.SelectMany(x => x.v);
         }
 
-        //private async IList<Question> buisnessLogic()
-        //{
-        //    var something = await m_DbContext.Questions.GroupBy(x => x.Score).Select(y => new { k = y.Key, v = y.OrderBy(r => Guid.NewGuid()).Take(3) }).ToListAsync();
-        //    return t;
-        //}
+
+        #region Test data
+        private IEnumerable<Question> GetBuisnessLogic()
+        {
+            var something = GetTestData()
+                .GroupBy(x => x.Score)
+                .Select(y =>
+                    new
+                    {
+                        k = y.Key,
+                        v = y.OrderBy(r => Guid.NewGuid()).Take(3)
+                    });
+            return something.SelectMany(x => x.v);
+        }
+
+        private IList<Question> GetTestData()
+        {
+            return new List<Question>
+            {
+                new Question { Id = 1, Score = 10, Text = $"A: {Guid.NewGuid()}",
+                    Answers = new List<Answer> 
+                    {
+                        new Answer { Id = 1, IsCorrect = true, QuestionId = 1, Text = $"A: {Guid.NewGuid()}" },
+                        new Answer { Id = 1, QuestionId = 1, Text = $"A: {Guid.NewGuid()}" }
+                    }
+                },
+                new Question { Id = 2, Score = 10, Text = $"B: {Guid.NewGuid()}",
+                    Answers = new List<Answer>
+                    {
+                        new Answer { Id = 1, IsCorrect = true, QuestionId = 1, Text = $"A: {Guid.NewGuid()}" },
+                        new Answer { Id = 1, QuestionId = 1, Text = $"A: {Guid.NewGuid()}" }
+                    } },
+                new Question { Id = 3, Score = 10, Text = $"C: {Guid.NewGuid()}",
+                    Answers = new List<Answer>
+                    {
+                        new Answer { Id = 1, IsCorrect = true, QuestionId = 1, Text = $"A: {Guid.NewGuid()}" },
+                        new Answer { Id = 1, QuestionId = 1, Text = $"A: {Guid.NewGuid()}" }
+                    } },
+                new Question { Id = 4, Score = 10, Text = $"D: {Guid.NewGuid()}",
+                    Answers = new List<Answer>
+                    {
+                        new Answer { Id = 1, IsCorrect = true, QuestionId = 1, Text = $"A: {Guid.NewGuid()}" },
+                        new Answer { Id = 1, QuestionId = 1, Text = $"A: {Guid.NewGuid()}" }
+                    } },
+                new Question { Id = 5, Score = 20, Text = $"A: {Guid.NewGuid()}",
+                    Answers = new List<Answer>
+                    {
+                        new Answer { Id = 1, IsCorrect = true, QuestionId = 1, Text = $"A: {Guid.NewGuid()}" },
+                        new Answer { Id = 1, QuestionId = 1, Text = $"A: {Guid.NewGuid()}" }
+                    } },
+                new Question { Id = 6, Score = 20, Text = $"B: {Guid.NewGuid()}",
+                    Answers = new List<Answer>
+                    {
+                        new Answer { Id = 1, IsCorrect = true, QuestionId = 1, Text = $"A: {Guid.NewGuid()}" },
+                        new Answer { Id = 1, QuestionId = 1, Text = $"A: {Guid.NewGuid()}" }
+                    } },
+                new Question { Id = 7, Score = 20, Text = $"C: {Guid.NewGuid()}",
+                    Answers = new List<Answer>
+                    {
+                        new Answer { Id = 1, IsCorrect = true, QuestionId = 1, Text = $"A: {Guid.NewGuid()}" },
+                        new Answer { Id = 1, QuestionId = 1, Text = $"A: {Guid.NewGuid()}" }
+                    } },
+                new Question { Id = 8, Score = 20, Text = $"D: {Guid.NewGuid()}",
+                    Answers = new List<Answer>
+                    {
+                        new Answer { Id = 1, IsCorrect = true, QuestionId = 1, Text = $"A: {Guid.NewGuid()}" },
+                        new Answer { Id = 1, QuestionId = 1, Text = $"A: {Guid.NewGuid()}" }
+                    } },
+                new Question { Id = 9, Score = 30, Text = $"A: {Guid.NewGuid()}",
+                    Answers = new List<Answer>
+                    {
+                        new Answer { Id = 1, IsCorrect = true, QuestionId = 1, Text = $"A: {Guid.NewGuid()}" },
+                        new Answer { Id = 1, QuestionId = 1, Text = $"A: {Guid.NewGuid()}" }
+                    } },
+                new Question { Id = 10, Score = 30, Text = $"B: {Guid.NewGuid()}",
+                    Answers = new List<Answer>
+                    {
+                        new Answer { Id = 1, IsCorrect = true, QuestionId = 1, Text = $"A: {Guid.NewGuid()}" },
+                        new Answer { Id = 1, QuestionId = 1, Text = $"A: {Guid.NewGuid()}" }
+                    } },
+                new Question { Id = 11, Score = 30, Text = $"C: {Guid.NewGuid()}",
+                    Answers = new List<Answer>
+                    {
+                        new Answer { Id = 1, IsCorrect = true, QuestionId = 1, Text = $"A: {Guid.NewGuid()}" },
+                        new Answer { Id = 1, QuestionId = 1, Text = $"A: {Guid.NewGuid()}" }
+                    } },
+                new Question { Id = 12, Score = 30, Text = $"D: {Guid.NewGuid()}",
+                    Answers = new List<Answer>
+                    {
+                        new Answer { Id = 1, IsCorrect = true, QuestionId = 1, Text = $"A: {Guid.NewGuid()}" },
+                        new Answer { Id = 1, QuestionId = 1, Text = $"A: {Guid.NewGuid()}" }
+                    } }
+            };
+        }
+        #endregion
     }
 }

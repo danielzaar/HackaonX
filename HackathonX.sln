@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HackathonX.DB", "HackathonX
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HackathonX.DB.Test", "HackathonX.DB.Test\HackathonX.DB.Test.csproj", "{237D9595-50D1-4446-89BB-AF959EE7D226}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HackathonX.DB.Init", "HackathonX.DB.Init\HackathonX.DB.Init.csproj", "{E188B845-37AE-4AC2-BBE1-CEEBFE7A9FBE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{237D9595-50D1-4446-89BB-AF959EE7D226}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{237D9595-50D1-4446-89BB-AF959EE7D226}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{237D9595-50D1-4446-89BB-AF959EE7D226}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E188B845-37AE-4AC2-BBE1-CEEBFE7A9FBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E188B845-37AE-4AC2-BBE1-CEEBFE7A9FBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E188B845-37AE-4AC2-BBE1-CEEBFE7A9FBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E188B845-37AE-4AC2-BBE1-CEEBFE7A9FBE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

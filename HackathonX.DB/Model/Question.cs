@@ -12,7 +12,7 @@ namespace HackathonX.DB.Model
 
         public int Id { get; set; }
         public string Text { get; set; } = null!;
-        public byte Score { get; set; }
+        public int Score { get; set; }
 
         public virtual ICollection<Answer> Answers { get; set; }
     }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace HackathonX.DB.Model
 {
@@ -51,8 +48,7 @@ namespace HackathonX.DB.Model
                 entity.ToTable("Leaderboard");
 
                 entity.Property(e => e.Timestamp)
-                    .IsRowVersion()
-                    .IsConcurrencyToken();
+                    .HasDefaultValue(DateTime.Now);
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Leaderboards)
@@ -68,9 +64,11 @@ namespace HackathonX.DB.Model
 
             modelBuilder.Entity<User>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id);
 
                 entity.Property(e => e.Name).HasMaxLength(30);
+
+                entity.HasIndex(e => e.Name).IsUnique();
             });
 
             OnModelCreatingPartial(modelBuilder);
