@@ -6,7 +6,19 @@
         xmlns:local="clr-namespace:HackathonX"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-
+    <Grid x:Name="ImageGrid" Width="{Binding ActualWidth, 
+              RelativeSource = {RelativeSource AncestorType = {x:Type Window}}}" 
+      Height="{Binding ActualHeight, 
+              RelativeSource ={RelativeSource AncestorType = {x:Type Window}}}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
     </Grid>
 </Window>
