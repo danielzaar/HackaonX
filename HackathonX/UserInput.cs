@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using HackathonX.DB.Model;
+using HackathonX.DB.Repositories;
+using System.Diagnostics;
 using System.Windows;
 
 namespace HackathonX.UI
@@ -9,6 +11,7 @@ namespace HackathonX.UI
     public partial class UserInput : Window
     {
         MainWindow mainWin;
+        UserRepository userRepository;
 
 
         public UserInput()
@@ -22,6 +25,12 @@ namespace HackathonX.UI
             Debug.WriteLine($"player: >>>{strName}<<<");
 
             mainWin = new MainWindow();
+            //mainWin.CurrentUser = userRepository.GetOrAddUser(strName);
+
+            User assumeNewUserForNow = new();
+            assumeNewUserForNow.Name = strName;
+            mainWin.CurrentUser = assumeNewUserForNow;
+            
             mainWin.Show();
             this.Hide();
         }
