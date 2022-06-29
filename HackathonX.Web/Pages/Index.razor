@@ -1,0 +1,26 @@
+﻿@page "/"
+
+<PageTitle>Index</PageTitle>
+
+<div>
+  <EditForm Model="@_absenceRequest" OnValidSubmit="Submit">
+    <div class="form-group">
+      <label>Your name:</label>
+        <InputText>
+        
+        </InputText>
+    </div>
+    <button class="btn btn-primary" type="submit">Start!</button>
+  </EditForm>
+</div>
+
+@code {
+    [Parameter] public EventCallback<AbsenceRequest> AbsencePlanSubmitted { get; set; }
+
+    private AbsenceRequest _absenceRequest = new AbsenceRequest { From = DateTime.UtcNow, To = DateTime.UtcNow };
+
+    private async Task Submit()
+    {
+        await AbsencePlanSubmitted.InvokeAsync(_absenceRequest);
+    }
+}
