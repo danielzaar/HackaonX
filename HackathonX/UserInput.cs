@@ -15,24 +15,26 @@ namespace HackathonX.UI
         MainWindow mainWin;
         UserRepository userRepository;
         HackathonXContext dbContext;
-        SqliteConnection _connection;
 
-
+        private readonly SqliteConnection _connection;
+        private readonly DbContextOptions<HackathonXContext> _contextOptions;
+        private readonly HackathonXContext _hackathonXContext;
+        UserRepository userrepo;
+       
         public UserInput()
         {
-            InitializeComponent();
-
-
-            userRepository = new UserRepository(dbContext);
-        }
-
-        private HackathonXContext GetContext()
-        {
-            _connection = new SqliteConnection("Data Source=HackathonX.db;");
+            _connection = new SqliteConnection("Data Source=HackathonX.db;");//new SqliteConnection("Filename=:memory:");
             _connection.Open();
 
-        }
+            _contextOptions = new DbContextOptionsBuilder<HackathonXContext>()
+                .UseSqlite(_connection)
+                .Options;
 
+            _hackathonXContext = new HackathonXContext(_contextOptions);
+
+            userrepo = new UserRepository(_hackathonXContext);
+            InitializeComponent();
+        }
 
         private void StartPlaying_Click(object sender, RoutedEventArgs e)
         {
@@ -40,11 +42,10 @@ namespace HackathonX.UI
             Debug.WriteLine($"player: >>>{strName}<<<");
 
             mainWin = new MainWindow();
-            mainWin.CurrentUser = userRepository.GetOrAddUser(strName);
+            //questionnaireRepository.GetQuestionnaire(3).GetAwaiter().GetResult();
+            User user = userrepo.GetOrAddUser(strName).GetAwaiter().GetResult();
 
-            //User assumeNewUserForNow = new();
-            //assumeNewUserForNow.Name = strName;
-            //mainWin.CurrentUser = assumeNewUserForNow;
+            mainWin.CurrentUser = user;
             
             mainWin.Show();
 
