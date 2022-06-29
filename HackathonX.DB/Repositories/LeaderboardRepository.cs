@@ -1,5 +1,4 @@
 ﻿using HackathonX.DB.Model;
-using HackathonX.DB.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace HackathonX.DB.Repositories
@@ -24,11 +23,9 @@ namespace HackathonX.DB.Repositories
                 .Include(x => x.User)
                 .GroupBy(x => x.UserId)
                 .Select(x => x.OrderByDescending(x => x.Score).First())
-                //.Distinct(new LeaderboardComparer())
                 .Take(takeTop)
-                //.OrderByDescending(x => x.Score)
                 .ToListAsync();
-            return leaderboard;
+            return leaderboard.OrderByDescending(x => x.Score);
         }
 
         public async Task SaveUserScore(Guid userId, int score, TimeSpan timeSpent)

@@ -3,17 +3,21 @@ using HackathonX.DB.Repositories;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace HackathonX.DB.Test
 {
     public class QuestionnaireRepositoryTest : IDisposable
     {
+        private readonly ITestOutputHelper _output;
         private readonly SqliteConnection _connection;
         private readonly DbContextOptions<HackathonXContext> _contextOptions;
         private readonly HackathonXContext _hackathonXContext;
 
-        public QuestionnaireRepositoryTest()
+        public QuestionnaireRepositoryTest(ITestOutputHelper output)
         {
+            _output = output;
+
             _connection = new SqliteConnection("Data Source=HackathonX.db;");//new SqliteConnection("Filename=:memory:");
             _connection.Open();
 
@@ -49,8 +53,9 @@ namespace HackathonX.DB.Test
 
             foreach (Question question in result)
             {
+                _output.WriteLine(question.Text);
                 Assert.NotEmpty(question.Answers);
-                Assert.Single(question.Answers.Where(x => x.IsCorrect));
+                Assert.Single(question.Answers, x => x.IsCorrect);
             }
         }
     }

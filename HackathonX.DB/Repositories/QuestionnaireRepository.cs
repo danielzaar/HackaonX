@@ -19,17 +19,19 @@ namespace HackathonX.DB.Repositories
 
         public async Task<IEnumerable<Question>> GetQuestionnaire(int takefromEachGroup = 3)
         {
-            var something = await m_DbContext.Questions
+            var allQuestions = await m_DbContext.Questions
                 .Include(q => q.Answers)
-                .GroupBy(x => x.Score)
-                .Select(y =>
-                    new
-                    {
-                        k = y.Key,
-                        v = y.OrderBy(r => Guid.NewGuid()).Take(takefromEachGroup)
-                    })
                 .ToListAsync();
-            return something.SelectMany(x => x.v);
+
+            var groupedByScore = allQuestions.GroupBy(x => x.Score)
+              .Select(y =>
+                  new
+                  {
+                      k = y.Key,
+                      v = y.OrderBy(r => Guid.NewGuid()).Take(takefromEachGroup)
+                  });
+                
+            return groupedByScore.SelectMany(x => x.v);
         }
 
 

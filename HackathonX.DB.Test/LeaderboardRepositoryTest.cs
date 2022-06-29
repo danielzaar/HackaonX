@@ -49,18 +49,28 @@ namespace HackathonX.DB.Test
             Assert.NotNull(leaderboard);
             Assert.Equal(score, leaderboard?.Score);
             Assert.Equal(time.Ticks, leaderboard?.Time);
+
+            await RemoveLeaderboardFromDbHelper(_hackathonXContext, new List<Guid> { user.Id });
         }
 
         [Fact]
         public async Task GetLeaderboard_TakeTen_ReturnsCorrectData()
         {
             // Arrange
+            List<User> users = new List<User>();
+
             string repetitiveName = Guid.NewGuid().ToString("N");
+            var repetetiveUser = await AddUserToDbHelper(_hackathonXContext, repetitiveName);
+            users.Add(repetetiveUser);
+
             for (int i = 0; i < 5; i++)
             {
+                await AddLeadersToDbHelper(_hackathonXContext, repetetiveUser.Id, (i + 1) * 50, i + 7);
+
                 string userName = Guid.NewGuid().ToString("N");
-                await AddLeadersToDbHelper(_hackathonXContext, userName, (i + 1) * 100, i + 5);
-                await AddLeadersToDbHelper(_hackathonXContext, repetitiveName, (i + 1) * 50, i + 7);
+                var user = await AddUserToDbHelper(_hackathonXContext, userName);
+                users.Add(user);
+                await AddLeadersToDbHelper(_hackathonXContext, user.Id, (i + 1) * 100, i + 5);
             }
 
             // Act
@@ -74,6 +84,8 @@ namespace HackathonX.DB.Test
             Assert.Single(result.Where(x => x.User.Name == repetitiveName));
             Assert.Equal(500, result.First().Score);
             Assert.Equal(TimeSpan.FromMinutes(9).Ticks, result.First().Time);
+
+            await RemoveLeaderboardFromDbHelper(_hackathonXContext, users.Select(x => x.Id).ToList());
         }
 
         private static async Task<User> AddUserToDbHelper(HackathonXContext dbContext, string name)
@@ -89,23 +101,24 @@ namespace HackathonX.DB.Test
             return await dbContext.Leaderboards.SingleOrDefaultAsync(x => x.UserId == userId);
         }
 
-        private static async Task AddLeadersToDbHelper(HackathonXContext dbContext, string name, int score, int time)
+        private static async Task AddLeadersToDbHelper(HackathonXContext dbContext, Guid userId, int score, int time)
         {
-            var user = await dbContext.Users.SingleOrDefaultAsync(x => x.Name == name);
-            if (user == null)
-            {
-                user = dbContext.Users.Add(new User { Name = name }).Entity;
-            }
-
             dbContext.Leaderboards.Add(
                 new Leaderboard
                 {
-                    UserId = user.Id,
+                    UserId = userId,
                     Score = score,
                     Time = TimeSpan.FromMinutes(time).Ticks,
                     Timestamp = DateTime.Now
                 });
 
+            await dbContext.SaveChangesAsync();
+        }
+
+        private static async Task RemoveLeaderboardFromDbHelper(HackathonXContext dbContext, List<Guid> userIds)
+        {
+            var leaderboards = await dbContext.Leaderboards.ToListAsync();
+            dbContext.Leaderboards.RemoveRange(leaderboards.Where(x => userIds.Contains(x.UserId)));
             await dbContext.SaveChangesAsync();
         }
     }
