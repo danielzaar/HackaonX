@@ -1,24 +1,72 @@
-﻿<Window x:Class="HackathonX.MainWindow"
+﻿<Window x:Class="HackathonX.MainWindow" Name="ParentWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HackathonX"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid x:Name="ImageGrid" Width="{Binding ActualWidth, 
-              RelativeSource = {RelativeSource AncestorType = {x:Type Window}}}" 
-      Height="{Binding ActualHeight, 
-              RelativeSource ={RelativeSource AncestorType = {x:Type Window}}}">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+        Title="MainWindow" Height="450" Width="800"
+
+    FontFamily="{DynamicResource MaterialDesignFont}"
+         TextElement.FontSize="13"
+    TextElement.FontWeight="Regular"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+    TextOptions.TextFormattingMode="Ideal"
+    TextOptions.TextRenderingMode="Auto">
+    <Grid Margin="15 0 15 15" DataContext="{Binding ElementName=ParentWindow, Path=.}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" MinWidth="50" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="*" MinWidth="70" />
+        </Grid.ColumnDefinitions>
+        
+        <TextBlock x:Name="UserName"
+            Grid.Row="0"
+            Grid.Column="0"
+            HorizontalAlignment="Center"
+            Text="{Binding Path=CurrentUser.Name}" />
+        <TextBlock  x:Name="Score"
+            Grid.Row="0"
+            Grid.Column="2"
+            Margin="0 0 0 3"
+            HorizontalAlignment="Center"
+            Text="{Binding Path=CurrentScore,  Mode = TwoWay, UpdateSourceTrigger = PropertyChanged}" />
+
+
+        <ListView ItemsSource="{Binding Path=Questions}" Grid.Row="1"  Grid.Column="1">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Path=Text}"/>
+                        <RadioButton GroupName="{Binding Path=Id}" Content="{Binding Path=Choice1}"/>
+                        <RadioButton GroupName="{Binding Path=Id}" Content="{Binding Path=Choice2}"/>
+                        <RadioButton GroupName="{Binding Path=Number}" Content="{Binding Path=Choice3}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        
+        <GridSplitter
+            Grid.Row="1"
+            Grid.Column="1"
+            HorizontalAlignment="Stretch" />
+        
+        <Grid Grid.Row="1" x:Name="ImageGrid" Grid.Column="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+        </Grid>
     </Grid>
 </Window>

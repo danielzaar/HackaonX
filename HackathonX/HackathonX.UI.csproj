@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.6" />
     <PackageReference Include="System.Drawing.Common" Version="7.0.0-preview.5.22301.12" />
   </ItemGroup>
 
@@ -16,6 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="HackathonX.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="images\world.PNG">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

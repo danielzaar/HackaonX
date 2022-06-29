@@ -17,18 +17,43 @@ using Rectangle = System.Windows.Shapes.Rectangle;
 using Brushes = System.Windows.Media.Brushes;
 using System.Drawing.Imaging;
 using HackathonX.DB.Model;
+using System.ComponentModel;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
+using HackathonX.DB.Repositories;
 
 namespace HackathonX
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+        private readonly DbContextOptions<HackathonXContext> _contextOptions;
+        private readonly HackathonXContext _hackathonXContext;
+
+        public IEnumerable<Question> Questions = new List<Question>();
+
+        private readonly SqliteConnection _connection;
+
         public MainWindow()
         {
+            _connection = new SqliteConnection("Data Source=HackathonX.db;");//new SqliteConnection("Filename=:memory:");
+            _connection.Open();
+
+            _contextOptions = new DbContextOptionsBuilder<HackathonXContext>()
+                .UseSqlite(_connection)
+                .Options;
+
+            _hackathonXContext = new HackathonXContext(_contextOptions);
+
+            using var questionnaireRepository = new QuestionnaireRepository(_hackathonXContext);
+            IEnumerable<Question> result =  questionnaireRepository.GetQuestionnaire(3).GetAwaiter().GetResult();
+
             InitializeComponent();
             base.Loaded += Window1_Loaded;
+            DataContext = CurrentUser;
         }
 
         private string image = @"images/world.png";
@@ -40,7 +65,26 @@ namespace HackathonX
         private const double PiecesHeight = 0.33;
         BitmapImage myBitmapImage = new BitmapImage();
 
+        private int _CurrentScore;
+
         public User CurrentUser { get; set; }
+
+        public int CurrentScore {
+            get
+            {
+                return _CurrentScore;
+            }
+            set 
+            {
+                _CurrentScore = value;
+                NotifyPropertyChanged("CurrentScore");
+            }
+        }
+
+        protected void NotifyPropertyChanged(String propertyName)
+        {
+            PropertyChanged?.DynamicInvoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         private void Window1_Loaded(object sender, RoutedEventArgs e)
         {
@@ -104,5 +148,6 @@ namespace HackathonX
             rec.Fill = ib;
             return rec;
         }
+
     }
 }
