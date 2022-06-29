@@ -14,6 +14,7 @@
         <TextBox x:Name="txtName" HorizontalAlignment="Left" Height="32" Margin="170,44,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="160" AutomationProperties.Name="txtName" FontSize="20" Grid.Column="1"/>
         <Label x:Name="label" Content="Name?" Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="32" Margin="114,44,0,0" VerticalAlignment="Top" Width="62"/>
         <Button x:Name="btnStart" Content="Start playing" HorizontalAlignment="Center" Height="23" VerticalAlignment="Center" Width="90" Grid.Column="1" Click="StartPlaying_Click "/>
+        <Label x:Name="lblFeedback" Content="" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="170,145,0,0" VerticalAlignment="Top" Width="160"/>
 
     </Grid>
 </Window>

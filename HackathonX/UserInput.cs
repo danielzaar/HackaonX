@@ -40,6 +40,11 @@ namespace HackathonX.UI
         {
             string strName = txtName.Text.Trim();
             Debug.WriteLine($"player: >>>{strName}<<<");
+            if (string.IsNullOrEmpty(strName))
+            {
+                lblFeedback.Content = "Name cannot be empty!";
+                return;
+            }
 
             mainWin = new MainWindow();
             User user = userrepo.GetOrAddUser(strName).GetAwaiter().GetResult();
