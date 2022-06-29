@@ -23,7 +23,7 @@ namespace HackathonX.UI
        
         public UserInput()
         {
-            _connection = new SqliteConnection("Data Source=HackathonX.db;");//new SqliteConnection("Filename=:memory:");
+            _connection = new SqliteConnection("Data Source=HackathonX.db;");
             _connection.Open();
 
             _contextOptions = new DbContextOptionsBuilder<HackathonXContext>()
@@ -42,15 +42,12 @@ namespace HackathonX.UI
             Debug.WriteLine($"player: >>>{strName}<<<");
 
             mainWin = new MainWindow();
-            //questionnaireRepository.GetQuestionnaire(3).GetAwaiter().GetResult();
             User user = userrepo.GetOrAddUser(strName).GetAwaiter().GetResult();
 
             mainWin.CurrentUser = user;
             
             mainWin.Show();
-
-            //5ScoreBoard scoreBoard = new ScoreBoard();
-            //5scoreBoard.Show();
+            
             this.Hide();
         }
     }
